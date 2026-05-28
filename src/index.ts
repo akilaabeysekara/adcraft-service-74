@@ -30,6 +30,7 @@ app.use(express.json())
 
 // app.use(hello)
 
+app.get("/", (req, res) => {res.send("ok")})
 app.use("/api/v1/customer", CustomerRouter)
 app.use("/api/v1/auth", AuthRouter)
 app.use("/api/v1/blog", BlogRouter)
