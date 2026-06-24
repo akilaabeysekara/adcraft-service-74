@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createUser, getMyDetails, login } from "../controllers/authController"
+import { createUser, getMyDetails, login, refreshToken } from "../controllers/authController"
 import { authenticate } from "../middleware/auth"
 import { requireRole } from "../middleware/role"
 import { UserRole } from "../models/userModel"
@@ -9,6 +9,7 @@ const router = Router()
 // PUBLIC
 router.post("/register", createUser)
 router.post("/login", login)
+router.post("/refresh", refreshToken)
 
 // PROTECTED
 router.get("/me", authenticate, getMyDetails)

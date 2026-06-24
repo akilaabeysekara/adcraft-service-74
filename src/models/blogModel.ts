@@ -16,7 +16,7 @@ const BlogSchema = new Schema<IBlog>(
     author: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "user_details"
+      ref: "user"
     },
     imageURL: { type: String }
   },

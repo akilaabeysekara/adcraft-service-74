@@ -13,7 +13,8 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const PORT = process.env.PORT
-const DB_URL = process.env.MONGODB_URI as string
+const DB_URL = process.env.DB_URL as string
+
 const app = express()
 
 app.use(cors())
@@ -30,7 +31,10 @@ app.use(express.json())
 
 // app.use(hello)
 
-app.get("/", (req, res) => {res.send("ok, Akila")})
+app.get("/", (req, res) => {
+  res.send("OK, (akila)")
+})
+
 app.use("/api/v1/customer", CustomerRouter)
 app.use("/api/v1/auth", AuthRouter)
 app.use("/api/v1/blog", BlogRouter)

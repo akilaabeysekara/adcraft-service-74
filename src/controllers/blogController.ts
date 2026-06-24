@@ -3,10 +3,6 @@ import cloudinary from "../config/cloudinary"
 import { BlogModel } from "../models/blogModel"
 import { AuthRequest } from "../middleware/auth"
 import axios from "axios"
-import dotenv from "dotenv"
-dotenv.config()
-const API_KEY = process.env.GOOGLE_API_KEY
-
 
 export const saveBlog = async (req: AuthRequest, res: Response) => {
   const { title, content } = req.body
@@ -109,14 +105,21 @@ export const getMyBlogs = async (req: AuthRequest, res: Response) => {
   }
 }
 
+import dotenv from "dotenv"
+dotenv.config()
+
+const API_KEY = process.env.GOOGLE_API_KEY
+
 export const generateContent = async (req: Request, res: Response) => {
-  const {text,maxToken} = req.body
-   const aiResponse = await axios.post(
+  const { text, maxToken } = req.body
+  try {
+    const aiResponse = await axios.post(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent",
       {
         contents: [
           {
-            parts: [{ text }]
+            parts: [{ text: text }]
+            // parts: [{ text: "What is " + text }]
           }
         ],
         generationConfig: {
@@ -131,15 +134,34 @@ export const generateContent = async (req: Request, res: Response) => {
       }
     )
 
+    console.log(aiResponse)
 
+    const generatedContent =
+      aiResponse.data?.candidates?.[0]?.content?.[0]?.text ||
+      aiResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No data"
 
-   const genratedContent =
-     aiResponse.data?.candidates?.[0]?.content?.[0]?.text ||
-     aiResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-     "No data"
+    // const generatedContent =
+    //   aiResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    //   "No text returned from model"
 
-     res.status(200).json({ message: "Content generated", data: genratedContent})
+    console.log("--------------------------------------")
+    // console.log(aiResponse.data?.candidates)
+
+    res
+      .status(200)
+      .json({
+        message: "Generated",
+        data: generatedContent,
+        ai: aiResponse?.data
+      })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Fail", error: err })
+  }
 }
-// Can use SDK (npm i @googleapis) or direct API call (axios/fetch) to call google api
-// token = words
-// call openai api to generate content based on the topic
+
+// Can use SDK (npm i @google/genai) or API call
+// * API call
+//
+// tokens - words
