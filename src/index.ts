@@ -13,6 +13,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const PORT = process.env.PORT
+console.log("DB_URL =", process.env.DB_URL)
 const DB_URL = process.env.DB_URL as string
 
 const app = express()
